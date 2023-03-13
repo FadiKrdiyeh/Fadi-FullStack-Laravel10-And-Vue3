@@ -1,0 +1,37 @@
+#header {
+  padding-left: 50px;
+  padding-right: 50px;
+  z-index: 999999;
+
+  .nav-item {
+    .nav-link {
+      -webkit-transition: all .3s ease-in-out;
+      -moz-transition: all .3s ease-in-out;
+      -ms-transition: all .3s ease-in-out;
+      -o-transition: all .3s ease-in-out;
+      transition: all .3s ease-in-out;
+      &.router-active {
+        position: relative;
+        // background-color: #dff7f9;
+        color: #000;
+        // border-bottom: 3px solid #00f;
+        // padding: 5px 15px;
+
+        &::after {
+          content: '';
+          height: 3px;
+          width: 110%;
+          background-color: #00f;
+          position: absolute;
+          bottom: 0;
+          left: 0;
+        }
+      }
+    }
+  }
+
+
+  ul {
+    list-style: none;
+  }
+}

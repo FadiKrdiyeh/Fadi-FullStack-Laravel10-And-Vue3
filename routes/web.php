@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +15,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('app');
+})->name('app');
+
+Route::prefix('app')->group(function () {
+  Route::resource('categories', CategoryController::class);
+});
+
+Route::any('{slug}', function () {
+  return redirect()->route('app');
 });

@@ -1,0 +1,22 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    min-height: 100vh;
+}
+
+@import './utilities/variables';
+@import './utilities/mixins';
+@import './utilities/funcitons';
+
+@import './components/create_button';
+
+@import './layouts/header';
+@import './layouts/sidebar';
+@import './layouts/loading';
+@import './layouts/footer';
+@import './layouts/media';
