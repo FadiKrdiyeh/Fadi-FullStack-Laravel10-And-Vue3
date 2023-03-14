@@ -16,6 +16,15 @@
     @endif
     @vite('resources/sass/app.scss')
 
+
+    <script>
+        (function() {
+            window.Laravel = {
+                csrfToken: '{{ csrf_token() }}'
+            };
+        })();
+    </script>
+
     @yield('headerStyles')
     @yield('headerScripts')
 </head>

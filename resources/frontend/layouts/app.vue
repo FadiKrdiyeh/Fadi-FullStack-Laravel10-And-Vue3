@@ -8,7 +8,14 @@
 
     <!-- For routing -->
     <div class="container">
-      <router-view></router-view>
+      <!-- <transition name="router-animation">
+        <router-view></router-view>
+      </transition> -->
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </div>
 
     <!-- Call Footer -->
@@ -20,16 +27,41 @@
 import AppSidebar from './sidebar.vue';
 import AppHeader from './header.vue';
 import AppFooter from './footer.vue';
+// import { mapGetters } from 'vuex';
 
 export default {
+  props: ['user'],
   data () {
     return {}
   },
-  // name: 'main-app',
-  components: {AppHeader, AppFooter, AppSidebar},
+
+  components: { AppHeader, AppFooter, AppSidebar },
+
+  created () {
+    const token = window.Laravel.csrfToken;
+    const authUser = window.Laravel.authUser;
+
+    this.$store.dispatch('setTokenAction', token);
+    this.$store.dispatch('setAuthUserAction', authUser);
+  },
 
   mounted () {
     console.log('App running successfully!');
-  }
+  },
+  // computed: {
+  //   ...mapGetters([
+  //     'getAuthUser'
+  //   ])
+  // }
 }
 </script>
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

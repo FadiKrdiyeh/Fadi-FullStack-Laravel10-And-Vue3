@@ -10,9 +10,9 @@
       </li>
     </ul>
 
-    <ul class="logout">
+    <ul class="logout" v-if="isAuth()">
       <li>
-        <a href="#">
+        <a href="#" @click="logout">
           <i class="fa fa-power-off fa-2x"></i>
           <span class="nav-text"> Logout </span>
         </a>
@@ -22,16 +22,40 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex';
+
   export default {
     data () {
       return {
         links: [
           { text: 'Home', path: '/', icon: 'home' },
-          { text: 'Dashboard', path: 'dashboard', icon: 'dashboard' },
-          { text: 'Categories', path: 'categories', icon: 'bookmark-o' },
-          { text: 'Test', path: 'test', icon: 'gears' }
+          { text: 'Dashboard', path: '/admin/dashboard', icon: 'dashboard' },
+          { text: 'Categories', path: '/admin/categories', icon: 'bookmark-o' },
+          { text: 'Test', path: '/test', icon: 'gears' }
         ]
       }
-    }
+    },
+    methods: {
+      async logout () {
+        const logoutResult = await this.callApi('admin/logout', 'GET');
+
+        if (logoutResult.data.status) {
+          this.successMsg('Logged out successfuly.');
+          window.location = '/admin/login';
+        } else {
+          this.errorMsg();
+        }
+      },
+      isAuth () {
+        return this.getAuthUser != null ? true : false;
+      }
+    },
+    created () {
+      console.log(this.isAuth());
+    },
+    computed: {
+      ...mapGetters(['getAuthUser'])
+    },
+
   }
 </script>

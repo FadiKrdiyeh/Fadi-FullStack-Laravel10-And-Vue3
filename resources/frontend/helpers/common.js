@@ -8,7 +8,7 @@ export default {
     async callApi (url, method, dataObj) {
       try {
         return await axios({
-          url: `app/${url}`,
+          url: `/app/${url}`,
           method: method,
           data: dataObj
         });
@@ -39,7 +39,7 @@ export default {
       });
     },
 
-    errorMsg (message, title = "Oops!") {
+    errorMsg (message = 'Something went wrong!', title = "Oops!") {
       this.$Notice.error({
         title: title,
         desc: message

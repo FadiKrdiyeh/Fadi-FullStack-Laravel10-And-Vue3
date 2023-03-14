@@ -18,4 +18,12 @@ class Category extends Model
     public function blogs () {
       return $this->belongsToMany(Blog::class, 'blog_categories');
     }
+
+    /////////////////// Accessors ///////////////////
+    public function getCreatedAtAttribute() {
+      return date('d/m/Y - h:m', strtotime($this->attributes['created_at']));
+    }
+    public function setSlugAttribute ($title) {
+      $this->attributes['slug'] = $this->uniqueSlug($title);
+    }
 }

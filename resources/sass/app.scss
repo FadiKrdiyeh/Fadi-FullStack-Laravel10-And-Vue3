@@ -14,9 +14,11 @@ html, body {
 @import './utilities/funcitons';
 
 @import './components/create_button';
+@import './components/router_animate';
 
 @import './layouts/header';
 @import './layouts/sidebar';
 @import './layouts/loading';
 @import './layouts/footer';
-@import './layouts/media';
+
+@import './pages/categories';
