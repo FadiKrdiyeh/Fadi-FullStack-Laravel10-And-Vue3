@@ -1,5 +1,5 @@
 <template>
-  <div class="area"></div>
+  <!-- <div class="area"></div>
   <nav class="main-menu">
     <ul>
       <li v-for="(link, index) of links" :key="index">
@@ -18,44 +18,36 @@
         </a>
       </li>
     </ul>
-  </nav>
+  </nav> -->
+  <h1>Sidebar...</h1>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex';
-
   export default {
-    data () {
-      return {
-        links: [
-          { text: 'Home', path: '/', icon: 'home' },
-          { text: 'Dashboard', path: '/admin/dashboard', icon: 'dashboard' },
-          { text: 'Categories', path: '/admin/categories', icon: 'bookmark-o' },
-          { text: 'Test', path: '/test', icon: 'gears' }
-        ]
-      }
-    },
-    methods: {
-      async logout () {
-        const logoutResult = await this.callApi('admin/logout', 'GET');
+    // data () {
+    //   return {
+    //     links: [
+    //       { text: 'Home', path: '/', icon: 'home' },
+    //       { text: 'Dashboard', path: '/admin/dashboard', icon: 'dashboard' },
+    //       { text: 'Categories', path: '/admin/categories', icon: 'bookmark-o' },
+    //       { text: 'Test', path: '/test', icon: 'gears' }
+    //     ]
+    //   }
+    // },
+    // methods: {
+    //   async logout () {
+    //     const logoutResult = await this.callApi('admin/logout', 'GET');
 
-        if (logoutResult.data.status) {
-          this.successMsg('Logged out successfuly.');
-          window.location = '/admin/login';
-        } else {
-          this.errorMsg();
-        }
-      },
-      isAuth () {
-        return this.getAuthUser != null ? true : false;
-      }
-    },
-    created () {
-      console.log(this.isAuth());
-    },
-    computed: {
-      ...mapGetters(['getAuthUser'])
-    },
-
+    //     if (logoutResult.data.status) {
+    //       this.successMsg('Logged out successfuly.');
+    //       window.location = '/admin/login';
+    //     } else {
+    //       this.errorMsg();
+    //     }
+    //   }
+    // },
+    // created () {
+    //   console.log(this.isAuth());
+    // }
   }
 </script>

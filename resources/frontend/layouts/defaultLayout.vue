@@ -3,17 +3,16 @@
     <!-- Call Header -->
     <app-header></app-header>
 
+    <h1 class="text-center">Default Layout</h1>
+
     <!-- Call Sidebar -->
     <app-sidebar></app-sidebar>
 
     <!-- For routing -->
     <div class="container">
-      <!-- <transition name="router-animation">
-        <router-view></router-view>
-      </transition> -->
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
-          <component :is="Component" />
+          <Component :is="Component" />
         </transition>
       </router-view>
     </div>
@@ -27,32 +26,21 @@
 import AppSidebar from './sidebar.vue';
 import AppHeader from './header.vue';
 import AppFooter from './footer.vue';
-// import { mapGetters } from 'vuex';
 
 export default {
-  props: ['user'],
   data () {
     return {}
   },
 
   components: { AppHeader, AppFooter, AppSidebar },
 
-  created () {
-    const token = window.Laravel.csrfToken;
-    const authUser = window.Laravel.authUser;
+  // created () {
+  //   const token = window.Laravel.csrfToken;
+  //   const authUser = window.Laravel.authUser;
 
-    this.$store.dispatch('setTokenAction', token);
-    this.$store.dispatch('setAuthUserAction', authUser);
-  },
-
-  mounted () {
-    console.log('App running successfully!');
-  },
-  // computed: {
-  //   ...mapGetters([
-  //     'getAuthUser'
-  //   ])
-  // }
+  //   this.$store.dispatch('setTokenAction', token);
+  //   this.$store.dispatch('setAuthUserAction', authUser);
+  // },
 }
 </script>
 <style>

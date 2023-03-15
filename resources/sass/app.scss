@@ -7,6 +7,12 @@
 html, body {
     width: 100%;
     min-height: 100vh;
+    position: relative;
+}
+body::after {
+  content: '';
+  display: block;
+  height: 50px; /* Set same as footer's height */
 }
 
 @import './utilities/variables';

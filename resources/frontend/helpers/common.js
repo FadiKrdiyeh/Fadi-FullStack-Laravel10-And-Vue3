@@ -1,4 +1,5 @@
 import axios from "axios";
+import { mapGetters } from "vuex";
 
 export default {
   data () {
@@ -15,6 +16,13 @@ export default {
       } catch (error) {
         return error.response;
       }
+    },
+
+    isUserAuth () {
+      return this.getAuthUser != null && this.getAuthUser.type == 'user' ? true : false;
+    },
+    isAdminAuth () {
+      return this.getAuthUser != null && this.getAuthUser.type == 'admin' ? true : false;
     },
 
     // Messages
@@ -44,6 +52,9 @@ export default {
         title: title,
         desc: message
       });
-    }
+    },
+  },
+  computed: {
+    ...mapGetters(['getAuthUser']),
   }
 }

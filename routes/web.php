@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 
 /*
@@ -16,7 +17,8 @@ use App\Http\Controllers\CategoryController;
 |
 */
 
-Route::get('/', [AdminController::class, 'index'])->name('app');
+Route::get('/', [AccountController::class, 'index'])->name('app');
+Route::get('/home', [AccountController::class, 'index'])->name('app.home');
 
 
 
@@ -30,11 +32,19 @@ Route::prefix('admin')->group(function () {
   Route::get('dashboard', [AdminController::class, 'index'])->name('dashboard');
 });
 
+Route::get('/login', [AccountController::class, 'index'])->name('user.login');
+Route::get('/blogs/create', [AccountController::class, 'index'])->name('user.blogs.create');
+
 Route::get('/test', [AdminController::class, 'index'])->name('test');
+Route::get('/test-user', [AccountController::class, 'index'])->name('test.user');
 
 
 
 Route::prefix('app')->group(function () {
+  Route::resource('blogs', BlogController::class)->except(['create', 'edit', 'show']);
+
+  Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
+
   Route::prefix('admin')->group(function () {
       Route::post('login', [AdminController::class, 'login']);
       Route::post('register', [AdminController::class, 'register']);
@@ -46,7 +56,11 @@ Route::prefix('app')->group(function () {
       Route::get('count-users', [AdminController::class, 'countUsers']);
   });
 
-  Route::resource('blogs', CategoryController::class)->except(['create', 'edit', 'show']);
+  Route::controller(AccountController::class)->group(function () {
+    Route::post('login', 'login');
+    Route::post('register', 'register');
+    Route::get('logout', 'logout');
+  });
 });
 
 Route::any('{slug}', function () {

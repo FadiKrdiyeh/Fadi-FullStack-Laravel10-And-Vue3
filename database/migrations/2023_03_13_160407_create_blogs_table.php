@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             $table->string('title', 150);
-            $table->text('html_content');
-            $table->text('json_content');
+            $table->text('content');
+            // $table->text('html_content');
+            // $table->text('json_content');
             $table->string('slug', 200);
             $table->boolean('is_accepted')->default(0);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();

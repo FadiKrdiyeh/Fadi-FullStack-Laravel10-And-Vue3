@@ -10,12 +10,27 @@ use App\Models\User;
 class AdminController extends Controller
 {
     public function index (Request $request) {
-      if (Auth::check() && $request->path() == 'admin/login') {
+      // return Auth::user();
+      // return $request->path();
+      // return Auth::user()->type;
+      if (Auth::check() && Auth::user()->type == 'admin' && $request->path() == 'admin/login') {
         return redirect('/admin/dashboard');
       }
-      if (!Auth::check() && $request->path() != 'admin/login') {
-        return redirect('/admin/login');
+      if (Auth::check() && Auth::user()->type == 'user') {
+        return redirect('/');
       }
+      if (!Auth::check() && $request->path() != 'admin/login') {
+        return redirect('/login');
+      }
+
+      // if (Auth::check() && Auth::user()->type == 'user' && $request->path() != 'login') {
+      //   return redirect('/home');
+      // }
+      // if (!Auth::check() && $request->path() != 'login') {
+      //   // return $request->path();
+      //   return redirect('/login');
+      // }
+
       return view('app');
     }
 

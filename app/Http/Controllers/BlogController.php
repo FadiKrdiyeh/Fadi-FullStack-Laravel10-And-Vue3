@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BlogController extends Controller
 {
@@ -28,7 +29,27 @@ class BlogController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      // return $request;
+      DB::beginTransation();
+        try {
+          $request->validate([
+            'title' => 'required',
+            'content' => 'required',
+            'categories' => 'required'
+          ]);
+
+          Blog::create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'user_id' => Auth::user()->id,
+          ]);
+
+          DB::commit();
+        } catch (\Throwable $th) {
+          //throw $th;
+          DB::rollback();
+
+        }
     }
 
     /**

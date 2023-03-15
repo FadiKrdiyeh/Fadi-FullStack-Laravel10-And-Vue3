@@ -12,7 +12,8 @@ class Blog extends Model
     use HasFactory;
 
     /////////////////// Fillable Columns ///////////////////
-    public $fillable = ['title', 'html_content', 'json_content', 'slug', 'is_accepted'];
+    // public $fillable = ['title', 'html_content', 'json_content', 'slug', 'is_accepted'];
+    public $fillable = ['title', 'content', 'slug', 'is_accepted'];
 
     /////////////////// Mutators ///////////////////
     // Store Unique Slug From Title
