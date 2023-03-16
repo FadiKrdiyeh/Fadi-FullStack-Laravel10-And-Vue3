@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Blog;
 use App\Models\User;
 
 class AdminController extends Controller
@@ -107,6 +108,93 @@ class AdminController extends Controller
           'status' => false,
           'message' => $th->getMessage(),
           'data' => null,
+        ], 500);
+      }
+    }
+
+    public function blogs () {
+      try {
+        $blogs = Blog::where('is_accepted', 0)->with(['user' => function ($query) {
+          $query->select('id', 'name');
+        }, 'categories'])->orderby('created_at', 'desc')->paginate(10);
+
+        if ($blogs) {
+          return response()->json([
+            'status' => true,
+            'message' => 'Blogs fetched successfuly.',
+            'data' => $blogs
+          ], 200);
+        } else {
+          return response()->json([
+            'status' => false,
+            'message' => 'Blogs fetched successfuly.',
+            'data' => $blogs
+          ], 404);
+        }
+      } catch (\Throwable $th) {
+        return response()->json([
+          'status' => false,
+          'message' => $th->getMessage(),
+          'data' => null
+        ], 500);
+      }
+    }
+
+    public function acceptBlog ($id) {
+      try {
+        $blog = Blog::find($id);
+        if ($blog) {
+          // $blog = Blog::where('id', $id)->update(['is_accepted' => 1]);
+          // return $blog;
+          // return $id;
+          $blog->update(['is_accepted' => 1]);
+          return response()->json([
+            'status' => true,
+            'message' => 'Blog accepted successfuly.',
+            'data' => $blog
+          ], 200);
+        } else {
+          return response()->json([
+            'status' => false,
+            'message' => 'Blog not found.',
+            'data' => null
+          ], 404);
+        }
+      } catch (\Throwable $th) {
+        return response()->json([
+          'status' => false,
+          'message' => $th->getMessage(),
+          'data' => null
+        ], 500);
+      }
+    }
+
+    public function deleteBlog ($id) {
+      try {
+        $blog = Blog::find($id)->first();
+
+        if ($blog) {
+          Blog::where('id', $id)->delete();
+
+          return response()->json([
+            'status' => true,
+            'message' => 'Blog deleted successfuly.',
+            'data' => $blog
+          ], 200);
+        } else {
+          return response()->json([
+            'status' => false,
+            'message' => 'Blog not found.',
+            'data' => null
+          ], 404);
+        }
+
+
+      } catch (\Throwable $th) {
+        return response()->json([
+          'status' => false,
+          'message' => $th->getMessage(),
+          'data' => null
         ], 500);
       }
     }

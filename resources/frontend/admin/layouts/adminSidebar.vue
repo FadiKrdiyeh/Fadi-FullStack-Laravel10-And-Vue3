@@ -27,7 +27,7 @@
       return {
         links: [
           { text: 'Dashboard', path: '/admin/dashboard', icon: 'dashboard' },
-          { text: 'Posts', path: '/admin/posts', icon: 'newspaper-o' },
+          { text: 'Blogs', path: '/admin/blogs', icon: 'newspaper-o' },
           { text: 'Comments', path: '/admin/comments', icon: 'comment' },
           { text: 'Categories', path: '/admin/categories', icon: 'bookmark-o' },
           { text: 'Users', path: '/admin/users', icon: 'users' },

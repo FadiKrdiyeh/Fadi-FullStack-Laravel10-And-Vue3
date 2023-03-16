@@ -49,7 +49,7 @@
 
         links: [
           { text: 'Dashboard', path: '/admin/dashboard' },
-          { text: 'Posts', path: '/admin/posts' },
+          { text: 'Blogs', path: '/admin/blogs' },
           { text: 'Comments', path: '/admin/comments' },
           { text: 'Categories', path: '/admin/categories' },
           { text: 'Users', path: '/admin/users' },

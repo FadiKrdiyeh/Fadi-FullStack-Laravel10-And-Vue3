@@ -12,7 +12,7 @@ class Comment extends Model
     use HasFactory;
 
     /////////////////// Fillable Columns ///////////////////
-    public $fillable = ['content'];
+    public $fillable = ['content', 'blog_id', 'user_id'];
 
     /////////////////// Relationships ///////////////////
     // Relation Many To One With Comments

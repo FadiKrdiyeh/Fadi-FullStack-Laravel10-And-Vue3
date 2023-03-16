@@ -1,12 +1,12 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light header default-header" id="header">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light header default-header fixed-top" id="header">
     <div class="container-fluid">
       <router-link to="/" class="navbar-brand">{{ brand }}</router-link>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav" v-if="isUserAuth()">
           <li class="nav-item" v-for="(link, index) of links" :key="index">
             <router-link :to="link.path" exact-active-class="router-active" class="nav-link">{{ link.text }}</router-link>
           </li>
@@ -44,7 +44,7 @@
 
         links: [
           { text: 'Home', path: '/' },
-          { text: 'Create Blog', path: '/blogs/create' },
+          { text: 'Blogs', path: '/blogs' },
           // { text: 'Test', path: '/test' },
         ],
       }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Comment;
+use Illuminate\Support\Str;
 
 class Blog extends Model
 {
@@ -13,7 +14,7 @@ class Blog extends Model
 
     /////////////////// Fillable Columns ///////////////////
     // public $fillable = ['title', 'html_content', 'json_content', 'slug', 'is_accepted'];
-    public $fillable = ['title', 'content', 'slug', 'is_accepted'];
+    public $fillable = ['title', 'content', 'slug', 'is_accepted', 'user_id'];
 
     /////////////////// Mutators ///////////////////
     // Store Unique Slug From Title
@@ -46,5 +47,10 @@ class Blog extends Model
         $newCount = $count > 0 ? ++$count : '';
 
         return $newCount > 0 ? "$slug-$newCount" : $slug;
+    }
+
+    /////////////////// Accessors ///////////////////
+    public function getCreatedAtAttribute() {
+      return date('d/m/Y - h:m', strtotime($this->attributes['created_at']));
     }
 }

@@ -23,16 +23,17 @@
       return {
         categoriesCount: 0,
         usersCount: 0,
-        blogsCount: 1925,
+        blogsCount: 0,
         commentsCount: 29874623
       }
     },
 
     async created () {
-      // , countBlogsResult, countCommentsResult
-      const [countCategoriesResult, countUsersResult] = await Promise.all([
+      // , countCommentsResult
+      const [countCategoriesResult, countUsersResult, countBlogsResult] = await Promise.all([
         this.callApi('admin/count-categories', 'GET'),
         this.callApi('admin/count-users', 'GET'),
+        this.callApi('admin/count-blogs', 'GET'),
       ]);
 
       if (countCategoriesResult.data.status) {
@@ -45,6 +46,12 @@
         this.usersCount = countUsersResult.data.data;
       } else {
         this.errorMsg('Couldnt count users!');
+      }
+
+      if (countBlogsResult.data.status) {
+        this.blogsCount = countBlogsResult.data.data;
+      } else {
+        this.errorMsg('Couldnt count blogs!');
       }
     }
   }

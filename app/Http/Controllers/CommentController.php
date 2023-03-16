@@ -10,9 +10,33 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($id)
     {
-        //
+      try {
+        $comments = Comment::where('blog_id', $id)->with(['user' => function ($query) {
+          $query->select('id', 'name');
+        }])->orderby('created_at', 'asc')->get();
+
+        if ($comments) {
+          return response()->json([
+            'status' => true,
+            'message' => 'Comments fetched successfuly.',
+            'data' => $comments
+          ], 200);
+        } else {
+          return response()->json([
+            'status' => false,
+            'message' => 'No comments yet.',
+            'data' => $comments
+          ], 404);
+        }
+      } catch (\Throwable $th) {
+        return response()->json([
+          'status' => false,
+          'message' => $th->getMessage(),
+          'data' => null
+        ], 500);
+      }
     }
 
     /**
@@ -28,7 +52,34 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      try {
+        $request->validate([
+          'content' => 'required',
+          'blog_id' => 'required',
+          'user_id' => 'required'
+        ]);
+
+        // return $request;
+
+
+        $comment = Comment::create([
+          'content' => $request->content,
+          'blog_id' => $request->blog_id,
+          'user_id' => $request->user_id,
+        ]);
+
+        return response()->json([
+          'status' => true,
+          'message' => 'Comment added successfuly.',
+          'data' => $comment->load('user')
+        ], 200);
+      } catch (\Throwable $th) {
+        return response()->json([
+          'status' => false,
+          'message' => $th->getMessage(),
+          'data' => null
+        ], 500);
+      }
     }
 
     /**

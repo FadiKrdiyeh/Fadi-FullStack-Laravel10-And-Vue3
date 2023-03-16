@@ -1,12 +1,12 @@
 <template>
-  <div class="flex items-center justify-center w-screen h-screen p-10 space-x-6 bg-gray-300">
+  <div class="flex items-center justify-center w-screen h-screen p-10 space-x-6 bg-gray-300 pt-5 mt-3">
     <!-- Call Header -->
     <app-header></app-header>
 
     <h1 class="text-center">Default Layout</h1>
 
     <!-- Call Sidebar -->
-    <app-sidebar></app-sidebar>
+    <!-- <app-sidebar></app-sidebar> -->
 
     <!-- For routing -->
     <div class="container">

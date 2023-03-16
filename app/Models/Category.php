@@ -23,6 +23,8 @@ class Category extends Model
     public function getCreatedAtAttribute() {
       return date('d/m/Y - h:m', strtotime($this->attributes['created_at']));
     }
+
+    /////////////////// Mutators ///////////////////
     public function setSlugAttribute ($title) {
       $this->attributes['slug'] = $this->uniqueSlug($title);
     }
