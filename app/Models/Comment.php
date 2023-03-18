@@ -24,4 +24,9 @@ class Comment extends Model
     public function blog () {
       return $this->belongsTo(Blog::class);
     }
+
+    /////////////////// Accessors ///////////////////
+    public function getCreatedAtAttribute() {
+      return date('d/m/Y - h:m', strtotime($this->attributes['created_at']));
+    }
 }

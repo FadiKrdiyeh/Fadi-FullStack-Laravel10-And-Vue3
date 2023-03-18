@@ -52,4 +52,9 @@ class User extends Authenticatable
     public function comments () {
       return $this->hasMany(Comment::class);
     }
+
+    /////////////////// Accessors ///////////////////
+    public function getCreatedAtAttribute() {
+      return date('d/m/Y - h:m', strtotime($this->attributes['created_at']));
+    }
 }

@@ -32,6 +32,10 @@ Route::prefix('admin')->group(function () {
 
   Route::get('blogs', [AdminController::class, 'index'])->name('admin.blogs');
 
+  Route::get('comments', [AdminController::class, 'index'])->name('admin.comments');
+
+  Route::get('users', [AdminController::class, 'index'])->name('admin.users');
+
   Route::get('dashboard', [AdminController::class, 'index'])->name('dashboard');
 });
 
@@ -67,6 +71,13 @@ Route::prefix('app')->group(function () {
       Route::delete('blogs/delete/{id}', [AdminController::class, 'deleteBlog']);
       // Route::resource('blogs', BlogController::class)->except(['create', 'edit', 'show']);
 
+      // Route::resource('comments', AdminController::class)->except(['create', 'edit', 'show']);
+      Route::get('comments/all', [AdminController::class, 'comments']);
+      Route::delete('comments/delete/{id}', [AdminController::class, 'deleteComment']);
+      Route::get('count-comments', [AdminController::class, 'countComments']);
+
+      Route::get('users/all', [AdminController::class, 'users']);
+      Route::delete('users/delete/{id}', [AdminController::class, 'deleteUser']);
       Route::get('count-users', [AdminController::class, 'countUsers']);
   });
 

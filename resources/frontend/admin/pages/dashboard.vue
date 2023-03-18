@@ -24,16 +24,17 @@
         categoriesCount: 0,
         usersCount: 0,
         blogsCount: 0,
-        commentsCount: 29874623
+        commentsCount: 0
       }
     },
 
     async created () {
-      // , countCommentsResult
-      const [countCategoriesResult, countUsersResult, countBlogsResult] = await Promise.all([
+      // ,
+      const [countCategoriesResult, countUsersResult, countBlogsResult, countCommentsResult] = await Promise.all([
         this.callApi('admin/count-categories', 'GET'),
         this.callApi('admin/count-users', 'GET'),
         this.callApi('admin/count-blogs', 'GET'),
+        this.callApi('admin/count-comments', 'GET'),
       ]);
 
       if (countCategoriesResult.data.status) {
@@ -52,6 +53,12 @@
         this.blogsCount = countBlogsResult.data.data;
       } else {
         this.errorMsg('Couldnt count blogs!');
+      }
+
+      if (countCommentsResult.data.status) {
+        this.commentsCount = countCommentsResult.data.data;
+      } else {
+        this.errorMsg('Couldnt count comments!');
       }
     }
   }

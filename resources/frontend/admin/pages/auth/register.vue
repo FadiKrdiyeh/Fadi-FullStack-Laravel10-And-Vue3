@@ -71,6 +71,7 @@
 
         if (registerResult.data.status) {
           this.successMsg('User registred successfuly.');
+          this.$router.push('/admin/users')
         } else {
           this.errorMsg('Registration failed.');
         }

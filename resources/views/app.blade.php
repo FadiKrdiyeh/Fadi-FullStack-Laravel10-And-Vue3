@@ -7,7 +7,9 @@
         <script>
             (function() {
                 window.Laravel = {
-                    authUser: @json(Auth::user())
+                    authUser: @json(Auth::user()),
+                    // unReadNotifications: '{{ Auth::user()->unreadNotifications }}'
+                    unReadNotifications: @json(Auth::user()->unreadNotifications)
                 };
             })();
         </script>

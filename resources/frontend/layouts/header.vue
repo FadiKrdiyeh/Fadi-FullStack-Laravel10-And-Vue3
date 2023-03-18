@@ -12,7 +12,18 @@
           </li>
         </ul>
 
-        <ul class="ms-auto" v-if="isUserAuth()">
+        <ul class="ms-auto d-flex" v-if="isUserAuth()">
+          <li class="nav-item dropdown me-3">
+            <Badge :count="notifications.length">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-bell d-inline me-2"></i>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                <li v-for="(notification, index) of notifications" :key="index"><a href="#" class="dropdown-item"><i class="fa fa-bell d-inline me-2"></i> {{ notification.data.message }}</a></li>
+              </ul>
+            </Badge>
+          </li>
+
           <li class="nav-item">
             <a class="nav-link"><i class="fa fa-user d-inline me-2"></i> {{ getAuthUser.name }} <Icon type="md-exit" size="20" @click="logout"></Icon></a>
           </li>
@@ -20,7 +31,7 @@
         <ul class="ms-auto" v-else>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="fa fa-user d-inline me-2"></i> Account
+              <i class="fa fa-bell d-inline me-2"></i> Account
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
               <li><router-link class="dropdown-item" to="/register">Register</router-link></li>
@@ -41,6 +52,7 @@
     data () {
       return {
         brand: 'Fadi Krdiyeh',
+        notifications: [],
 
         links: [
           { text: 'Home', path: '/' },
@@ -50,11 +62,15 @@
       }
     },
     created () {
+      // console.log(window.Laravel);
+      this.notifications = window.Laravel.unReadNotifications;
+      console.log(window.Laravel.unReadNotifications);
       // console.log(this.isUserAuth());
     },
     methods: {
       async logout () {
         const logoutResult = await this.callApi('logout', 'GET');
+
 
         if (logoutResult.data.status) {
           this.successMsg('Logged out successfuly.');
