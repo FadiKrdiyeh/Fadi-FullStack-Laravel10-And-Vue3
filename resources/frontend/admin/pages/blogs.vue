@@ -2,7 +2,7 @@
   <div>
     <h1 class="mt-5">Blogs requests:</h1>
 
-    <Table border :loading="getLoadingState('loadingState')" :columns="columns" :data="blogs" no-data-text="No blogs found..." class="mt-5">
+    <Table border :loading="getLoadingState('loadingState')" :columns="columns" :data="blogs.data" no-data-text="No blogs found..." class="mt-5">
       <!-- <template #categories="{ row, index }"> -->
       <template #categories="{ row }">
         <Space wrap v-for="(category, index) in row.categories" :key="index">
@@ -15,11 +15,13 @@
       <template #action="{ row, index }">
           <Space wrap>
             <Button type="info" shape="circle" icon="md-information" @click="showInfo(row, index)"></Button>
-            <Button type="success" shape="circle" icon="md-checkmark" :loading="getLoadingState('createLoadingState')" :disabled="getLoadingState('createLoadingState')" @click="showAccept(row, index)"></Button>
+            <Button type="success" shape="circle" icon="md-checkmark" @click="showAccept(row, index)"></Button>
             <Button type="error" shape="circle" icon="md-close" @click="showDelete(row, index)"></Button>
           </Space>
         </template>
       </Table>
+
+      <Page :total="blogs.total" :page-size="blogs.per_page" class="mt-3 mb-5" @on-change="changePaginate" v-if="blogs.total > blogs.per_page" />
 
       <Modal v-model="showInfoModal" v-if="blogData" :closable="false">
         <template #header>
@@ -88,15 +90,28 @@
       let fetchBlogsResult = await this.callApi('admin/blogs', 'GET');
 
       if (fetchBlogsResult.data.status) {
-          this.blogs = fetchBlogsResult.data.data.data;
+          this.blogs = fetchBlogsResult.data.data;
       } else {
         this.errorMsg();
       }
 
-      console.log(this.blogs.data);
+      // console.log(this.blogs.data);
       this.$store.dispatch('setLoadingStateAction', { type: 'loadingState', value: false });
     },
     methods: {
+      async changePaginate (page) {
+        this.$store.dispatch('setLoadingStateAction', { type: 'loadingState', value: true });
+
+        let fetchBlogsResult = await this.callApi(`admin/blogs?page=${ page }`, 'GET');
+
+        if (fetchBlogsResult.data.status) {
+            this.blogs = fetchBlogsResult.data.data;
+        } else {
+          this.errorMsg();
+        }
+
+        this.$store.dispatch('setLoadingStateAction', { type: 'loadingState', value: false });
+      },
       showInfo (blog, index) {
         this.showInfoModal = true;
         this.blogIndex = index;
@@ -116,7 +131,7 @@
         const acceptBlogResult = await this.callApi(`admin/blogs/accept/${this.blogId}`, 'POST');
 
         if (acceptBlogResult.data.status) {
-          this.blogs.splice(this.blogIndex, 1);
+          this.blogs.data.splice(this.blogIndex, 1);
           this.successMsg('Blog accepted successfuly.');
         } else {
           switch (acceptBlogResult.status) {
@@ -150,7 +165,7 @@
     watch: {
       getDeleteModalInfo(obj) {
         if (obj.isDeleted) {
-          this.blogs.splice(obj.deleteIndex, 1);
+          this.blogs.data.splice(obj.deleteIndex, 1);
 
           this.$store.dispatch('setDeleteModalInfoAction', {
             showDeleteModal: false,

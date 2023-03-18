@@ -2,7 +2,7 @@
   <div>
     <h1 class="mt-5">Users management: <router-link to="/admin/register"><Button icon="md-add">Add Admin</Button></router-link></h1>
 
-    <Table border :loading="getLoadingState('loadingState')" :columns="columns" :data="users" no-data-text="No users found..." class="mt-5">
+    <Table border :loading="getLoadingState('loadingState')" :columns="columns" :data="users.data" no-data-text="No users found..." class="mt-5">
       <template #type="{ row }">
         <Tag color="magenta" v-if="row.type == 'admin'">{{ row.type }}</Tag>
         <span v-else>{{ row.type }}</span>
@@ -19,6 +19,8 @@
           </Space>
         </template>
       </Table>
+
+      <Page :total="users.total" :page-size="users.per_page" class="mt-3 mb-5" @on-change="changePaginate" v-if="users.total > users.per_page" />
 
     <!-- Delete modal -->
     <delete-modal />
@@ -51,15 +53,28 @@
       let fetchUsersResult = await this.callApi('admin/users/all', 'GET');
 
       if (fetchUsersResult.data.status) {
+        console.log(fetchUsersResult.data.data);
           this.users = fetchUsersResult.data.data;
       } else {
         this.errorMsg();
       }
 
-      console.log(this.users.data);
       this.$store.dispatch('setLoadingStateAction', { type: 'loadingState', value: false });
     },
     methods: {
+      async changePaginate (page) {
+        this.$store.dispatch('setLoadingStateAction', { type: 'loadingState', value: true });
+
+        let fetchUsersResult = await this.callApi(`admin/users/all?page=${ page }`, 'GET');
+
+        if (fetchUsersResult.data.status) {
+            this.users = fetchUsersResult.data.data;
+        } else {
+          this.errorMsg();
+        }
+
+        this.$store.dispatch('setLoadingStateAction', { type: 'loadingState', value: false });
+      },
       showDelete (row, index) {
         this.$store.dispatch('setDeleteModalInfoAction', {
           showDeleteModal: true,

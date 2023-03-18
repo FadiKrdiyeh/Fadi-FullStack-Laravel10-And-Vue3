@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class BlogAcceptedByAdmin extends Notification
+class BlogDeletedByAdmin extends Notification
 {
     use Queueable;
 
@@ -18,7 +18,7 @@ class BlogAcceptedByAdmin extends Notification
      */
     public function __construct($blog_title)
     {
-        $this->blog_id = $blog_title;
+        $this->blog_title = $blog_title;
     }
 
     /**
@@ -39,8 +39,8 @@ class BlogAcceptedByAdmin extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'title' => $this->blog_title,
-            'message' => 'Your blog accepted by admin! Thank you.'
+          'title' => $this->blog_title,
+          'message' => 'Sorry.. Your blog deleted by admin! Thank you.'
         ];
     }
 }

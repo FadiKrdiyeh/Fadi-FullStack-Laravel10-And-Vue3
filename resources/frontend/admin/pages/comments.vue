@@ -2,7 +2,7 @@
   <div>
     <h1 class="mt-5">Comments management:</h1>
 
-    <Table border :loading="getLoadingState('loadingState')" :columns="columns" :data="comments" no-data-text="No comments found..." class="mt-5">
+    <Table border :loading="getLoadingState('loadingState')" :columns="columns" :data="comments.data" no-data-text="No comments found..." class="mt-5">
       <template #categories="{ row }">
         <Space wrap v-for="(category, index) in row.categories" :key="index">
           <Tag>{{ category.name }}</Tag>
@@ -20,6 +20,8 @@
           </Space>
         </template>
       </Table>
+
+      <Page :total="comments.total" :page-size="comments.per_page" class="mt-3 mb-5" @on-change="changePaginate" v-if="comments.total > comments.per_page" />
 
     <!-- Delete modal -->
     <delete-modal />
@@ -70,11 +72,27 @@
           isDeleted: false
         });
       },
+      async changePaginate (page) {
+        // console.log(page);
+
+        this.$store.dispatch('setLoadingStateAction', { type: 'loadingState', value: true });
+
+        let fetchCommentsPaginationResult = await this.callApi(`admin/comments/all?page=${ page }`, 'GET');
+
+        if (fetchCommentsPaginationResult.data.status) {
+            this.comments = fetchCommentsPaginationResult.data.data;
+        } else {
+          this.errorMsg();
+        }
+
+        console.log(this.comments.data);
+        this.$store.dispatch('setLoadingStateAction', { type: 'loadingState', value: false });
+      }
     },
     watch: {
       getDeleteModalInfo(obj) {
         if (obj.isDeleted) {
-          this.comments.splice(obj.deleteIndex, 1);
+          this.comments.data.splice(obj.deleteIndex, 1);
 
           this.$store.dispatch('setDeleteModalInfoAction', {
             showDeleteModal: false,

@@ -19,7 +19,12 @@
                 <i class="fa fa-bell d-inline me-2"></i>
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                <li v-for="(notification, index) of notifications" :key="index"><a href="#" class="dropdown-item"><i class="fa fa-bell d-inline me-2"></i> {{ notification.data.message }}</a></li>
+                <li v-for="(notification, index) of notifications" :key="index">
+                  <a href="#" class="dropdown-item">
+                    <h4>{{ notification.data.title }}</h4>
+                    <i class="fa fa-bell d-inline me-2"></i> {{ notification.data.message }}
+                  </a>
+                </li>
               </ul>
             </Badge>
           </li>
@@ -64,7 +69,7 @@
     created () {
       // console.log(window.Laravel);
       this.notifications = window.Laravel.unReadNotifications;
-      console.log(window.Laravel.unReadNotifications);
+      // console.log(window.Laravel.unReadNotifications);
       // console.log(this.isUserAuth());
     },
     methods: {

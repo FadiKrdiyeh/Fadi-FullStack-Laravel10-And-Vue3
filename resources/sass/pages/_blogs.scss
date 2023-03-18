@@ -78,3 +78,26 @@
     }
   }
 }
+
+.comments-container {
+  border: 1px solid #111;
+  padding: 30px;
+
+  .comment-item {
+    padding: 20px 10px;
+    border-bottom: 1px solid #333;
+
+    .comment-title {
+      font-size: 24px;
+      font-weight: bold;
+      .comment-date {
+        font-size: 12px;
+      }
+    }
+    .comment-content {
+      font-size: 18px;
+      margin-left: 20px;
+      color: #2525258c;
+    }
+  }
+}

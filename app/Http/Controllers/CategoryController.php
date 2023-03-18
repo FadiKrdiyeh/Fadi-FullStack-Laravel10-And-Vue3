@@ -13,7 +13,7 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-          $categories = Category::orderBy('created_at', 'desc')->get();
+          $categories = Category::orderBy('created_at', 'desc')->paginate(5);
 
           return response()->json([
             'status' => true,

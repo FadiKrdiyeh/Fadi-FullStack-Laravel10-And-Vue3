@@ -13,6 +13,7 @@ use App\Models\Comment;
 use App\Models\User;
 
 use App\Notifications\BlogAcceptedByAdmin;
+use App\Notifications\BlogDeletedByAdmin;
 
 class AdminController extends Controller
 {
@@ -147,36 +148,23 @@ class AdminController extends Controller
     }
 
     public function acceptBlog ($id) {
-      // DB::beginTransaction();
+      DB::beginTransaction();
       try {
         $blog = Blog::find($id);
         if ($blog) {
-          // $blog = Blog::where('id', $id)->update(['is_accepted' => 1]);
-          // return $blog;
-          // return $id;
-          // $blog->update(['is_accepted' => 1]);
+          $blog->update(['is_accepted' => 1]);
 
-          // $user = User::where('id', $blog->user_id);
-
-          // Notification::send($user, new BlogAcceptedByAdmin($blog->id));
-
-
-          // return $blog->user_id;
           $user = User::where('id', $blog->user_id)->get();
-          // return $user;
-          // $user->notify((new BlogAcceptedByAdmin($blog->id))->afterCommit());
-          // $user->notify(new BlogAcceptedByAdmin($blog->id));
-          Notification::send($user, new BlogAcceptedByAdmin($blog->id));
-          // $user->notify(new InvoicePaid($invoice));
+          Notification::send($user, new BlogAcceptedByAdmin($blog->title));
 
-          // DB::commit();
+          DB::commit();
           return response()->json([
             'status' => true,
             'message' => 'Blog accepted successfuly.',
             'data' => $blog
           ], 200);
         } else {
-          // DB::rollback();
+          DB::rollback();
 
           return response()->json([
             'status' => false,
@@ -185,7 +173,7 @@ class AdminController extends Controller
           ], 404);
         }
       } catch (\Throwable $th) {
-        // DB::rollback();
+        DB::rollback();
 
         return response()->json([
           'status' => false,
@@ -196,11 +184,17 @@ class AdminController extends Controller
     }
 
     public function deleteBlog ($id) {
+      DB::beginTransaction();
       try {
         $blog = Blog::find($id)->first();
 
         if ($blog) {
           Blog::where('id', $id)->delete();
+
+          $user = User::where('id', $blog->user_id)->get();
+          Notification::send($user, new BlogDeletedByAdmin($blog->title));
+
+          DB::commit();
 
           return response()->json([
             'status' => true,
@@ -228,7 +222,7 @@ class AdminController extends Controller
       try {
         $comments = Comment::with(['user' => function ($query) {
           $query->select('id', 'name');
-        }, 'blog'])->orderby('created_at', 'desc')->get();
+        }, 'blog'])->orderby('created_at', 'desc')->paginate(5);
 
         if ($comments) {
           return response()->json([
@@ -237,6 +231,8 @@ class AdminController extends Controller
             'data' => $comments
           ], 200);
         } else {
+          DB::rollback();
+
           return response()->json([
             'status' => false,
             'message' => 'No comments yet.',
@@ -244,6 +240,8 @@ class AdminController extends Controller
           ], 404);
         }
       } catch (\Throwable $th) {
+        DB::rollback();
+
         return response()->json([
           'status' => false,
           'message' => $th->getMessage(),
@@ -301,7 +299,7 @@ class AdminController extends Controller
     public function users ()
     {
       try {
-        $users = User::orderby('created_at', 'desc')->get();
+        $users = User::orderby('created_at', 'desc')->paginate(10);
 
         if ($users) {
           return response()->json([

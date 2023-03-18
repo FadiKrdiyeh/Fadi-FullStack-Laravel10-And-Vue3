@@ -18,7 +18,7 @@ class BlogController extends Controller
         try {
           $blogs = Blog::where('is_accepted', 1)->with(['user' => function ($query) {
             $query->select('id', 'name');
-          }, 'categories'])->withCount('comments')->orderby('created_at', 'desc')->paginate(10);
+          }, 'categories'])->withCount('comments')->orderby('created_at', 'desc')->paginate(2);
 
           if ($blogs) {
             return response()->json([

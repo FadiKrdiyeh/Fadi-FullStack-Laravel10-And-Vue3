@@ -15,7 +15,7 @@ class CommentController extends Controller
       try {
         $comments = Comment::where('blog_id', $id)->with(['user' => function ($query) {
           $query->select('id', 'name');
-        }])->orderby('created_at', 'asc')->get();
+        }])->orderby('created_at', 'desc')->paginate(5);
 
         if ($comments) {
           return response()->json([

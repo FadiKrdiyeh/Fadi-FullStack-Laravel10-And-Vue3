@@ -21,11 +21,15 @@
       </div>
     </div>
 
-    <div class="comments-container" v-if="!getLoadingState('loadingState')">
-      <div class="comment-item" v-for="(comment, index) of comments" :key="index">
-        <h3>{{ comment.user.name }}</h3>
-        <p>{{ comment.content }}</p>
+    <div v-if="!getLoadingState('loadingState')">
+      <div class="comments-container" v-if="comments.data.length > 0">
+        <Button @click="loadMoreComments(++comments.current_page)" :loading="getLoadingState('fetchingLoadingState')" :disabled="comments.current_page >= comments.last_page"><Icon type="md-refresh" /> Load more comments...</Button>
+        <div class="comment-item" v-for="(comment, index) of comments.data" :key="index">
+          <h3 class="comment-title">{{ comment.user.name }} | <span style="font-size: 12px;" class="comment-data">{{ comment.created_at }}</span></h3>
+          <p class="comment-content">{{ comment.content }}</p>
+        </div>
       </div>
+      <div class="alert alert-secondary" v-else>No comments yet...</div>
     </div>
 
     <div class="add-comment-container d-block">
@@ -53,18 +57,15 @@
 
       if (fetchBlogResult.data.status) {
         this.blog = fetchBlogResult.data.data[0];
-
-        console.log(this.blog);
       } else {
         this.errorMsg('Couldnt load blog data.');
       }
 
-      console.log(this.blog.id);
       const fetchBlogCommentsResult = await this.callApi(`comments/${this.blog.id}`, 'GET');
 
       if (fetchBlogCommentsResult.data.status) {
         this.comments = fetchBlogCommentsResult.data.data;
-        console.log(fetchBlogCommentsResult.data.data);
+        this.comments.data = this.comments.data.reverse();
       } else {
         this.errorMsg('Couldnt load comments.');
       }
@@ -72,6 +73,25 @@
       this.$store.dispatch('setLoadingStateAction', { type: 'loadingState', value: false });
     },
     methods: {
+      async loadMoreComments (page) {
+        this.$store.dispatch('setLoadingStateAction', { type: 'fetchingLoadingState', value: true });
+
+        const loadMoreCommentsResult = await this.callApi(`comments/${this.blog.id}?page=${ page }`, 'GET');
+
+        if (loadMoreCommentsResult.data.status) {
+          let loadedComments = loadMoreCommentsResult.data.data.data;
+
+          console.log(loadedComments);
+          console.log(this.comments);
+          this.comments.data.unshift(...loadedComments.reverse());
+
+          // this.comments.data = this.comments.data.reverse();
+        } else {
+          this.errorMsg('Couldnt load comments.');
+        }
+
+        this.$store.dispatch('setLoadingStateAction', { type: 'fetchingLoadingState', value: false });
+      },
       async comment () {
         this.$store.dispatch('setLoadingStateAction', { type: 'createLoadingState', value: true });
 
@@ -80,7 +100,7 @@
         if (addCommentResult.data.status) {
           this.successMsg('Comment added successfuly.');
           this.commentContent = '';
-          this.comments.push(addCommentResult.data.data);
+          this.comments.data.push(addCommentResult.data.data);
           console.log(addCommentResult.data.data);
           ++this.blog.comments_count;
         } else {

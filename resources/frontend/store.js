@@ -9,6 +9,7 @@ export default new Vuex.Store({
     authUser: null,
     loadingStates: {
       loadingState: false,
+      fetchingLoadingState: false,
       createLoadingState: false,
       editLoadingState: false,
       deleteLoadingState: false

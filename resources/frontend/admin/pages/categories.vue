@@ -2,7 +2,7 @@
   <div>
     <h1 class="mt-5">Categories: <Button icon="md-add" @click="createModal = true">Add Category</Button></h1>
 
-    <Table border :loading="getLoadingState('loadingState')" :columns="columns" :data="categories" no-data-text="No categories found..." class="mt-5">
+    <Table border :loading="getLoadingState('loadingState')" :columns="columns" :data="categories.data" no-data-text="No categories found..." class="mt-5">
       <template #action="{ row, index }">
           <Space wrap>
             <Button type="primary" shape="circle" icon="md-create" @click="showEdit(row, index)"></Button>
@@ -10,6 +10,8 @@
           </Space>
         </template>
       </Table>
+
+      <Page :total="categories.total" :page-size="categories.per_page" class="mt-3 mb-5" @on-change="changePaginate" v-if="categories.total > categories.per_page" />
 
     <!-- Create modal -->
     <Modal v-model="createModal" draggable sticky scrollable :mask="false" title="Create category">
@@ -78,12 +80,25 @@
       this.$store.dispatch('setLoadingStateAction', { type: 'loadingState', value: false });
     },
     methods: {
+      async changePaginate (page) {
+        this.$store.dispatch('setLoadingStateAction', { type: 'loadingState', value: true });
+
+        let fetchCategoriesResult = await this.callApi(`admin/categories?page=${ page }`, 'GET');
+
+        if (fetchCategoriesResult.data.status) {
+            this.categories = fetchCategoriesResult.data.data;
+        } else {
+          this.errorMsg();
+        }
+
+        this.$store.dispatch('setLoadingStateAction', { type: 'loadingState', value: false });
+      },
       async create () {
         this.$store.dispatch('setLoadingStateAction', { type: 'createLoadingState', value: true });
         const createResult = await this.callApi('admin/categories', 'POST', this.createData);
 
         if (createResult.data.status) {
-          this.categories.unshift(createResult.data.data);
+          this.categories.data.unshift(createResult.data.data);
           this.successMsg('Category created successfuly!');
         } else {
           this.errorMsg();
@@ -105,7 +120,7 @@
         const editResult = await this.callApi(`admin/categories/${this.editData.id}`, 'PUT', this.editData);
 
         if (editResult.data.status) {
-          this.categories[this.editIndex] = editResult.data.data;
+          this.categories.data[this.editIndex] = editResult.data.data;
           this.successMsg('Category updated successfuly!');
         } else {
           switch (editResult.status) {
@@ -143,7 +158,7 @@
     watch: {
       getDeleteModalInfo(obj) {
         if (obj.isDeleted) {
-          this.categories.splice(obj.deleteIndex, 1);
+          this.categories.data.splice(obj.deleteIndex, 1);
 
           this.$store.dispatch('setDeleteModalInfoAction', {
             showDeleteModal: false,
